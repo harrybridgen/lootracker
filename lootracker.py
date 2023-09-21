@@ -124,6 +124,7 @@ while True:
                         if command == "join":
                             player_name = " ".join(command_parts[1:])
                             message = loot_splitter.player_join(player_name)
+                            
                         elif command == "log":
                             if len(command_parts) >= 3:
                                 item_name = command_parts[1]
