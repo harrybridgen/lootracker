@@ -5,9 +5,9 @@ import time
 
 class LootSplitter:
     def __init__(self):
-        self.members = {}  # Dictionary to store information about raid members
-        self.active_members = set()  # Set to store currently active raid members
-        self.loot_log = []  # List to store loot drops
+        self.members = {} 
+        self.active_members = set()  
+        self.loot_log = [] 
 
     def add_member(self, player_name):
         if player_name.strip() and player_name not in self.members:
@@ -18,20 +18,19 @@ class LootSplitter:
 
     def log_drop(self, item_name, gp_value):
         if item_name.strip() and gp_value >= 0:
-            gp_value_int = int(gp_value)  # Convert GP value to an integer
+            gp_value_int = int(gp_value)  
             active_share = 0
             if self.active_members:
                 active_share = gp_value_int // len(
                     self.active_members
-                )  # Use integer division
+                )  
             for player in self.active_members:
                 self.members[player]["loot_share"] += active_share
-            formatted_gp_value = "{:,}".format(gp_value_int)  # Format GP value with commas
+            formatted_gp_value = "{:,}".format(gp_value_int)  
             self.loot_log.append({"item": item_name, "value": gp_value_int})
             return f"{item_name} ({formatted_gp_value} GP) logged."
         else:
             return "Invalid input. Please enter a valid item name and GP value."
-
 
     def player_join(self, player_name):
         if player_name.strip():
@@ -56,7 +55,7 @@ class LootSplitter:
         loot_shares = {}
         for player, info in self.members.items():
             loot_shares[player] = "{:,}".format(info["loot_share"])
-            info["loot_share"] = 0  # Reset loot share for the next raid
+            info["loot_share"] = 0  
 
         return loot_shares
 
@@ -195,13 +194,12 @@ while True:
 
     # Draw message area
     pygame.draw.rect(window, message_bg_color, message_area)
-    pygame.draw.rect(window, BLACK, message_area, 2)  # Add border
+    pygame.draw.rect(window, BLACK, message_area, 2)  
     text_surface = font.render("Messages", True, BLACK)
     window.blit(text_surface, (message_area.x + 10, message_area.y + 10))
-    y_offset_message = 40  # Initialize y_offset for message area
+    y_offset_message = 40  
 
     for message in messages[message_scroll : message_scroll + max_messages]:
-        # Only render the visible portion based on message_scroll
         text_surface = font.render(message, True, BLACK)
         window.blit(
             text_surface, (message_area.x + 20, message_area.y + y_offset_message)
@@ -210,15 +208,14 @@ while True:
 
     # Update and draw party members area
     pygame.draw.rect(window, party_members_bg_color, party_members_area)
-    pygame.draw.rect(window, BLACK, party_members_area, 2)  # Add border
+    pygame.draw.rect(window, BLACK, party_members_area, 2)  
     text_surface = font.render("Party Members", True, BLACK)
     window.blit(text_surface, (party_members_area.x + 10, party_members_area.y + 10))
-    y_offset_party = 40  # Initialize y_offset for party members area
+    y_offset_party = 40  
 
     # Convert the dict_items object to a list and then slice it
     party_members_list = list(loot_splitter.members.items())
     for player, info in party_members_list[party_scroll : party_scroll + max_messages]:
-        # Only render the visible portion based on party_scroll
         loot_share = int(info["loot_share"])
         formatted_gp_value = "{:,}".format(loot_share)
         text_surface = font.render(f"{player}: {formatted_gp_value} GP", True, BLACK)
