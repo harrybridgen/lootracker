@@ -26,10 +26,12 @@ class LootSplitter:
                 )  # Use integer division
             for player in self.active_members:
                 self.members[player]["loot_share"] += active_share
+            formatted_gp_value = "{:,}".format(gp_value_int)  # Format GP value with commas
             self.loot_log.append({"item": item_name, "value": gp_value_int})
-            return f"{item_name} (GP: {gp_value_int}) logged."
+            return f"{item_name} ({formatted_gp_value} GP) logged."
         else:
             return "Invalid input. Please enter a valid item name and GP value."
+
 
     def player_join(self, player_name):
         if player_name.strip():
@@ -53,7 +55,7 @@ class LootSplitter:
     def split_loot(self):
         loot_shares = {}
         for player, info in self.members.items():
-            loot_shares[player] = info["loot_share"]
+            loot_shares[player] = "{:,}".format(info["loot_share"])
             info["loot_share"] = 0  # Reset loot share for the next raid
 
         return loot_shares
@@ -121,37 +123,43 @@ while True:
                     if command_input:
                         command_parts = command_input.split()
                         command = command_parts[0].strip().lower()
+
                         if command == "join":
                             player_name = " ".join(command_parts[1:])
                             message = loot_splitter.player_join(player_name)
-                            
+
                         elif command == "log":
-                            if len(command_parts) >= 3:
+                            if loot_splitter.active_members.__len__() == 0:
+                                message = "No active players. Please add players to the raid."
+                            elif len(command_parts) >= 3:
                                 item_name = command_parts[1]
                                 try:
-                                    gp_value = float(command_parts[2])
+                                    gp_value = int(command_parts[2])
                                     message = loot_splitter.log_drop(
                                         item_name, gp_value
                                     )
                                 except ValueError:
-                                    message = (
-                                        "Invalid GP value. Please enter a valid number."
-                                    )
+                                    message = "Invalid GP value. Please enter a valid number."
+                            else:
+                                message = "Invalid input. Please enter a valid item name and GP value."
+                                
                         elif command == "leave":
                             player_name = " ".join(command_parts[1:])
                             message = loot_splitter.player_leave(player_name)
+
                         elif command == "split":
                             loot_shares = loot_splitter.split_loot()
-                            # Display loot shares in the message area
+
                             message = "Loot Shares:\n"
                             for player, share in loot_shares.items():
-                                message += f"{player} gets {share:.2f} GP\n"
+                                message += f"{player} gets {share} GP\n"
+
                         elif command == "quit":
                             pygame.quit()
                             sys.exit()
                         else:
                             message = "Invalid command. Please enter a valid command."
-                        # Add the message to the message list
+
                         messages.append(message)
                     command_input = ""
                 elif event.key == pygame.K_BACKSPACE:
@@ -212,7 +220,8 @@ while True:
     for player, info in party_members_list[party_scroll : party_scroll + max_messages]:
         # Only render the visible portion based on party_scroll
         loot_share = int(info["loot_share"])
-        text_surface = font.render(f"{player}: {loot_share} GP", True, BLACK)
+        formatted_gp_value = "{:,}".format(loot_share)
+        text_surface = font.render(f"{player}: {formatted_gp_value} GP", True, BLACK)
         window.blit(
             text_surface,
             (party_members_area.x + 20, party_members_area.y + y_offset_party),
