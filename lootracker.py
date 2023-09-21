@@ -8,24 +8,6 @@ class LootSplitter:
         self.members = {}  # Dictionary to store information about raid members
         self.active_members = set()  # Set to store currently active raid members
         self.loot_log = []  # List to store loot drops
-        self.player_join("Player 1")
-        self.player_join("Player 2")
-        self.player_join("Player 3")
-        self.player_join("Player 4")
-        self.player_join("Player 5")
-        self.player_join("Player 6")
-        self.player_join("Player 7")
-        self.player_join("Player 8")
-        self.player_join("Player 9")
-        self.player_join("Player 10")
-        self.player_join("Player 11")
-        self.player_join("Player 12")
-        self.player_join("Player 13")
-        self.player_join("Player 14")
-        self.player_join("Player 15")
-        self.player_join("Player 16")
-        self.player_join("Player 17")
-        self.player_join("Player 18")
 
     def add_member(self, player_name):
         if player_name.strip() and player_name not in self.members:
